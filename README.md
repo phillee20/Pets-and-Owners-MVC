@@ -35,6 +35,15 @@ In this sprint, we are going to create a fully functioning server that can handl
 All of these routes should start with `/api/` as we are creating an API. Make them restful!
 
 Remember to use `nodemon` so that you do not have to keep manually restarting your express server!
+Once `nodemon` is installed, add a script to your `package.json` to make use of it.
+
+```json
+"scripts": {
+   "dev": "nodemon app.js"
+}
+```
+
+To start your server, instead of running directly with node (`node app.js`) use your dev script `npm run dev`.
 
 ### Day 1 - GET endpoints to implement:
 
