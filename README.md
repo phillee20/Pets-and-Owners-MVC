@@ -45,7 +45,7 @@ Once `nodemon` is installed, add a script to your `package.json` to make use of 
 
 To start your server, instead of running directly with node (`node app.js`) use your dev script `npm run dev`.
 
-### Day 1 - GET endpoints to implement:
+### GET endpoints to implement:
 
 1. GET `/owners/:id` - responds with the relevant owner's data
 2. GET `/owners` - responds with an array containing the data of every owner (_hint: you will need to use [fs.readdir](https://www.geeksforgeeks.org/node-js-fs-promise-readdir-method) to read all of the file names in the owners folder_)
@@ -53,7 +53,7 @@ To start your server, instead of running directly with node (`node app.js`) use 
 4. GET `/pets` - responds with an array containing all of the pets' data. This endpoint should accept a query of `temperament` so that users can filter pets by their temperament, e.g. `GET /api/pets?temperament=grumpy` responds with an array containing all the pets with a `temperament` of `grumpy`
 5. GET `/pets/:id` - responds with the data of the relevant pet
 
-### Day 2 - PATCH, POST & DELETE endpoints to implement:
+### PATCH, POST & DELETE endpoints to implement:
 
 _don't forget to use `express.json()` to access the request body! & think about what the endpoint for each of the below should be_
 
