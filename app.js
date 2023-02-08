@@ -5,6 +5,12 @@ app.use(express.json());
 
 const port = 3000;
 
+const { fetchOwnerById } = require("./controller");
+
+//GET OWNERS BY ID - Respond with relevant owners data
+app.get("/owners/:id", fetchOwnerById);
+
+/*
 //GET OWNERS BY ID - Respond with relevant owners data
 app.get("/owners/:id", (request, response) => {
   const { id } = request.params;
@@ -14,6 +20,7 @@ app.get("/owners/:id", (request, response) => {
     response.status(200).send({ owner });
   });
 });
+*/
 
 //DATA OF EVERY OWNER
 app.get("/owners", (request, response) => {
@@ -190,3 +197,5 @@ app.delete(`/data/pets/:id`, (request, response) => {
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
+
+module.exports = { app };
