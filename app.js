@@ -1,9 +1,9 @@
 const express = require("express");
 const fs = require("fs/promises");
-const { ConsoleWriter } = require("istanbul-lib-report");
 const app = express();
+app.use(express.json());
 
-const port = 9090;
+const port = 3000;
 
 //GET OWNERS BY ID - Respond with relevant owners data
 app.get("/owners/:id", (request, response) => {
@@ -30,6 +30,7 @@ app.get("/owners", (request, response) => {
   });
 });
 
+//GET PETS FOR THE RELEVANT OWNER
 app.get("/owners/:id/pets", (request, response) => {
   const { id } = request.params;
   fs.readFile(`${__dirname}/data/owners/o${id}.json`).then((ownerJSON) => {
@@ -70,7 +71,7 @@ app.get("/pets", (request, response) => {
       const pets = petsJSONResults.map((petJSON) => {
         return JSON.parse(petJSON);
       });
-      // console.log(pets); All dogs in objects
+
       if (temperament) {
         const filteredTemperament = pets.filter((pet) => {
           return pet.temperament === temperament;
@@ -92,8 +93,99 @@ app.get("/pets/:id", (request, response) => {
   });
 });
 
-//Patching an owner
-//app.patch;
+/*
+//Patching/Updating an Owners data
+app.patch("/data/owners/:id", (request, response) => {
+  const id = request.params.id;
+  const updatedBody = request.body;
+  fs.writeFile(
+    `${__dirname}/data/owners/o${id}.json`,
+    JSON.stringify(updatedBody, null, 2)
+  ).then(() => {
+    response.status(200).send({ file: updatedBody });
+  });
+});
+*/
+
+//Patching/Updating an Owners data
+app.patch("/data/owners/:id", (request, response) => {
+  const { id } = request.params;
+  const usersUpdateData = request.body;
+  fs.readFile(`${__dirname}/data/owners/o${id}.json`, "utf-8")
+    .then((owner) => {
+      const ownerObj = JSON.parse(owner);
+      if (usersUpdateData.name) {
+        ownerObj.name = usersUpdateData.name;
+      }
+      if (usersUpdateData.age) {
+        ownerObj.age = usersUpdateData.age;
+      }
+      const writeFilePromise = fs.writeFile(
+        `${__dirname}/data/owners/o${id}.json`,
+        JSON.stringify(ownerObj)
+      );
+      console.log(ownerObj);
+      return Promise.all([ownerObj, writeFilePromise]);
+    })
+    .then((promiseArr) => {
+      const updatedData = promiseArr[0];
+      response.status(201).send(updatedData);
+    });
+});
+
+//POST A NEW OWNER!
+app.post("/data/owners", (request, response) => {
+  const newPerson = {
+    id: `o${Date.now()}`,
+    name: request.body.name,
+    age: request.body.age,
+  };
+  fs.writeFile(
+    `${__dirname}/data/owners/${newPerson.id}.json`,
+    JSON.stringify(newPerson, null, 2)
+  ).then(() => {
+    response.status(201).send({ newPerson });
+  });
+});
+
+//POST PET TO AN OWNER
+app.post("/data/owners/:id/pets", (request, response) => {
+  const id = request.params.id;
+  fs.readdir(`${__dirname}/data/owners`).then((fileNames) => {
+    const checkIdfile = `${id}.json`;
+    console.log(checkIdfile);
+    console.log(fileNames);
+    if (fileNames.includes(checkIdfile)) {
+      const newPet = {
+        id: `p${Date.now()}`,
+        name: request.body.name,
+        avatarUrl: request.body.avatarUrl,
+      };
+      fs.writeFile(
+        `${__dirname}/data/pets/${newPet.id}.json`,
+        JSON.stringify(newPet, null, 2)
+      ).then(() => {
+        response.status(201).send({ newPet });
+      });
+    }
+  });
+});
+
+//DELETE PETS
+app.delete(`/data/pets/:id`, (request, response) => {
+  const petId = request.params.id;
+  console.log(request.params.id);
+  fs.readdir(`${__dirname}/data/pets`).then((results) => {
+    const petToRemovePath = `${petId}.json`;
+    if (results.includes(petToRemovePath)) {
+      fs.unlink(`${__dirname}/data/pets/${petToRemovePath}`).then(
+        (response) => {
+          response.status(200).send(`Pet ${petId} deleted`);
+        }
+      );
+    } else response.status(404).send(`Pet ${petId} not found`);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
