@@ -5,13 +5,17 @@ app.use(express.json());
 
 const port = 3000;
 
-const { fetchOwnerById } = require("./controller");
+const { getOwnerByID, getEveryOwner } = require("./controller");
 
-//GET OWNERS BY ID - Respond with relevant owners data
-app.get("/owners/:id", fetchOwnerById);
+//TASK 1 - GET OWNERS BY ID - RESPOND WITH RELEVANT OWNERS DATA
 
 /*
-//GET OWNERS BY ID - Respond with relevant owners data
+Took out all of the syntax and moved it to Controller as this just needs getOwnerByID function now once the request comes in from client!
+*/
+
+app.get("/owners/:id", getOwnerByID);
+
+/* CODE BEFORE ITS TAKEN APART!
 app.get("/owners/:id", (request, response) => {
   const { id } = request.params;
   //console.log(request);
@@ -22,7 +26,12 @@ app.get("/owners/:id", (request, response) => {
 });
 */
 
-//DATA OF EVERY OWNER
+//TASK 2 - DATA OF EVERY OWNER
+
+app.get("/owners", getEveryOwner);
+
+/*
+CODE BEFORE ITS TAKEN APART!
 app.get("/owners", (request, response) => {
   fs.readdir(`${__dirname}/data/owners`).then((ownerJSON) => {
     const ownerFileArray = ownerJSON;
@@ -36,6 +45,7 @@ app.get("/owners", (request, response) => {
     });
   });
 });
+*/
 
 //GET PETS FOR THE RELEVANT OWNER
 app.get("/owners/:id/pets", (request, response) => {
