@@ -1,7 +1,6 @@
-const fs = require("fs/promises"); //Uses fs library within models here.
+const fs = require("fs/promises");
 
 const fetchOwnerByID = (id) => {
-  //Create a function for fetchOwnersByID - Performs all the logic in Models
   return fs //Must return the promise
     .readFile(`${__dirname}/data/owners/o${id}.json`)
     .then((ownerJSON) => {
@@ -27,30 +26,27 @@ const fetchEveryOwner = () => {
     });
 };
 
-const fetchOwnerPet = (id) => {
+const fetchOwnerPet = (ownerID) => {
   return fs
-    .readFile(`${__dirname}/data/owners/o${id}.json`)
-    .then((ownerJSON) => {
-      const owner = JSON.parse(ownerJSON);
-      const ownerId = owner.id;
-      console.log(ownerId);
-      return fs.readdir(`${__dirname}/data/pets`).then((petsFileJSON) => {
-        const petFileArray = petsFileJSON;
-        const petDataArray = [];
-        petFileArray.forEach((file) => {
-          return fs
-            .readFile(`${__dirname}/data/pets/${file}`)
-            .then((petDataJSON) => {
-              petDataArray.push(JSON.parse(petDataJSON));
-              if (petFileArray.length === petDataArray.length) {
-                const petsData = petDataArray.filter(
-                  (pet) => pet.owner === ownerId
-                );
-                return petsData;
-              }
-            });
-        });
+    .readdir("./data/pets", "UTF8")
+    .then((petFiles) => {
+      const arrayOfPromises = petFiles.map((pet) => {
+        return fs.readFile(`./data/pets/${pet}`, "utf8");
       });
+      return Promise.all(arrayOfPromises);
+    })
+    .then((stringifiedPets) => {
+      const parsedPets = stringifiedPets.map((pet) => {
+        return JSON.parse(pet);
+      });
+      return parsedPets;
+    })
+    .then((parsedPets) => {
+      const ownersPets = parsedPets.filter((pet) => {
+        return ownerID === pet.owner;
+      });
+
+      return ownersPets;
     });
 };
 

@@ -15,68 +15,13 @@ Took out all of the code and moved it to "Controller" as app.js just needs getOw
 
 app.get("/owners/:id", getOwnerByID);
 
-/* CODE BEFORE ITS TAKEN APART!
-app.get("/owners/:id", (request, response) => {
-  const { id } = request.params;
-  //console.log(request);
-  fs.readFile(`${__dirname}/data/owners/o${id}.json`).then((ownerJSON) => {
-    const owner = JSON.parse(ownerJSON);
-    response.status(200).send({ owner });
-  });
-});
-*/
-
 //TASK 2 - GET DATA OF EVERY OWNER
 
 app.get("/owners", getEveryOwner);
 
-/*
-CODE BEFORE ITS TAKEN APART!
-app.get("/owners", (request, response) => {
-  fs.readdir(`${__dirname}/data/owners`).then((ownerJSON) => {
-    const ownerFileArray = ownerJSON;
-    const ownerDataArray = [];
-    ownerFileArray.forEach((file) => {
-      fs.readFile(`${__dirname}/data/owners/${file}`).then((dataJSON) => {
-        ownerDataArray.push(JSON.parse(dataJSON));
-        if (ownerFileArray.length === ownerDataArray.length)
-          response.status(200).send({ ownerDataArray });
-      });
-    });
-  });
-});
-*/
-
 //TASK 3 - GET PETS FOR THE RELEVANT OWNER
 
 app.get("/owners/:id/pets", getOwnerPet);
-
-/*
-CODE BEFORE ITS TAKEN APART!
-app.get("/owners/:id/pets", (request, response) => {
-  const { id } = request.params;
-  fs.readFile(`${__dirname}/data/owners/o${id}.json`).then((ownerJSON) => {
-    const owner = JSON.parse(ownerJSON);
-    const ownerId = owner.id;
-    console.log(ownerId);
-    fs.readdir(`${__dirname}/data/pets`).then((petsFileJSON) => {
-      const petFileArray = petsFileJSON;
-      const petDataArray = [];
-      petFileArray.forEach((file) => {
-        fs.readFile(`${__dirname}/data/pets/${file}`).then((petDataJSON) => {
-          petDataArray.push(JSON.parse(petDataJSON));
-          if (petFileArray.length === petDataArray.length) {
-            const petsData = petDataArray.filter(
-              (pet) => pet.owner === ownerId
-            );
-            response.status(200).send({ petsData });
-          }
-        });
-      });
-    });
-  });
-});
-*/
 
 //TASK 4 - GET PETS TEMPERAMENT
 app.get("/pets", (request, response) => {
